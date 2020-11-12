@@ -18,14 +18,14 @@ void convert_drs4(const std::string inputfile, const std::string& outputfile){
 
     std::uint16_t buf_event1[9];
     std::uint16_t buf_event2[3];
-    std::uint16_t buf_ch[2];
+    std::uint16_t buf_event3[2];
 
     std::uint16_t range_center;
     std::uint16_t trigger_cell;
-    std::uint32_t ch1_dt[1024];
-    std::uint32_t ch2_dt[1024];
-    std::uint32_t ch3_dt[1024];
-    std::uint32_t ch4_dt[1024];
+    float ch1_dt[1024];
+    float ch2_dt[1024];
+    float ch3_dt[1024];
+    float ch4_dt[1024];
     std::uint16_t ch1_wf[1024];
     std::uint16_t ch2_wf[1024];
     std::uint16_t ch3_wf[1024];
@@ -46,61 +46,61 @@ void convert_drs4(const std::string inputfile, const std::string& outputfile){
     // start reading DRS4 binary data
     std::uint64_t size = 0;
     std::uint8_t header[4];
-    ifs.read(reinterpret_cast<char *>(&header), sizeof(std::uint8_t) * 4);
+    ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
 
     // time header
-    ifs.read(reinterpret_cast<char *>(&header), sizeof(std::uint8_t) * 4);
-    ifs.read(reinterpret_cast<char *>(&header), sizeof(std::uint8_t) * 4);
+    ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
+    ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
     while (true) {
-        ifs.read(reinterpret_cast<char *>(&header), sizeof(std::uint8_t) * 4);
+        ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
         if (header[0] == 'C' && header[1] == '0' && header[2] == '0' && header[3] == '1') {
             has_ch1 = true;
-            ifs.read(reinterpret_cast<char *>(&ch1_dt), sizeof(std::uint32_t) * 1024);
+            ifs.read(reinterpret_cast<char *>(&ch1_dt), sizeof(ch1_dt));
         } else if (header[0] == 'C' && header[1] == '0' && header[2] == '0' && header[3] == '2') {
             has_ch2 = true;
-            ifs.read(reinterpret_cast<char *>(&ch2_dt), sizeof(std::uint32_t) * 1024);
+            ifs.read(reinterpret_cast<char *>(&ch2_dt), sizeof(ch2_dt));
         } else if (header[0] == 'C' && header[1] == '0' && header[2] == '0' && header[3] == '3') {
             has_ch3 = true;
-            ifs.read(reinterpret_cast<char *>(&ch3_dt), sizeof(std::uint32_t) * 1024);
+            ifs.read(reinterpret_cast<char *>(&ch3_dt), sizeof(ch3_dt));
         } else if (header[0] == 'C' && header[1] == '0' && header[2] == '0' && header[3] == '4') {
             has_ch4 = true;
-            ifs.read(reinterpret_cast<char *>(&ch4_dt), sizeof(std::uint32_t) * 1024);
+            ifs.read(reinterpret_cast<char *>(&ch4_dt), sizeof(ch4_dt));
         } else {
-            ifs.seekg(-sizeof(std::uint8_t) * 4, std::ios::cur);
+            ifs.seekg(-sizeof(header), std::ios::cur);
             break;
         }
     }
 
     // event header
     while (true) {
-        if (ifs.read(reinterpret_cast<char *>(&header), sizeof(std::uint8_t) * 4)) {
-            ifs.read(reinterpret_cast<char *>(&buf_event1), sizeof(std::uint16_t) * 9);
-            ifs.read(reinterpret_cast<char *>(&range_center), sizeof(std::uint16_t));
-            ifs.read(reinterpret_cast<char *>(&buf_event2), sizeof(std::uint16_t) * 3);
-            ifs.read(reinterpret_cast<char *>(&trigger_cell), sizeof(std::uint16_t));
+        if (ifs.read(reinterpret_cast<char *>(&header), sizeof(header))) {
+            ifs.read(reinterpret_cast<char *>(&buf_event1), sizeof(buf_event1));
+            ifs.read(reinterpret_cast<char *>(&range_center), sizeof(range_center));
+            ifs.read(reinterpret_cast<char *>(&buf_event2), sizeof(buf_event2));
+            ifs.read(reinterpret_cast<char *>(&trigger_cell), sizeof(trigger_cell));
 
             if (has_ch1) {
-                ifs.read(reinterpret_cast<char *>(&header), sizeof(std::uint8_t) * 4);
-                ifs.read(reinterpret_cast<char *>(&buf_ch), sizeof(std::uint16_t) * 2);
-                ifs.read(reinterpret_cast<char *>(&ch1_wf), sizeof(std::uint16_t) * 1024);
+                ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
+                ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
+                ifs.read(reinterpret_cast<char *>(&ch1_wf), sizeof(ch1_wf));
             }
 
             if (has_ch2) {
-                ifs.read(reinterpret_cast<char *>(&header), sizeof(std::uint8_t) * 4);
-                ifs.read(reinterpret_cast<char *>(&buf_ch), sizeof(std::uint16_t) * 2);
-                ifs.read(reinterpret_cast<char *>(&ch2_wf), sizeof(std::uint16_t) * 1024);
+                ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
+                ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
+                ifs.read(reinterpret_cast<char *>(&ch2_wf), sizeof(ch2_wf));
             }
 
             if (has_ch3) {
-                ifs.read(reinterpret_cast<char *>(&header), sizeof(std::uint8_t) * 4);
-                ifs.read(reinterpret_cast<char *>(&buf_ch), sizeof(std::uint16_t) * 2);
-                ifs.read(reinterpret_cast<char *>(&ch3_wf), sizeof(std::uint16_t) * 1024);
+                ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
+                ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
+                ifs.read(reinterpret_cast<char *>(&ch3_wf), sizeof(ch3_wf));
             }
 
             if (has_ch4) {
-                ifs.read(reinterpret_cast<char *>(&header), sizeof(std::uint8_t) * 4);
-                ifs.read(reinterpret_cast<char *>(&buf_ch), sizeof(std::uint16_t) * 2);
-                ifs.read(reinterpret_cast<char *>(&ch4_wf), sizeof(std::uint16_t) * 1024);
+                ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
+                ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
+                ifs.read(reinterpret_cast<char *>(&ch4_wf), sizeof(ch4_wf));
             }
             ++size;
             t->Fill();
