@@ -42,7 +42,7 @@ void convert_drs4(const std::string inputfile, const std::string& outputfile){
 
     // start reading DRS4 binary data
     std::uint64_t size = 0;
-    std::uint8_t header[4];
+    std::array<std::uint8_t, 4> header {};
     ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
 
     // time header
@@ -50,19 +50,19 @@ void convert_drs4(const std::string inputfile, const std::string& outputfile){
     ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
     while (true) {
         ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
-        if (header[0] == 'C' && header[1] == '0' && header[2] == '0' && header[3] == '1') {
+        if (header.at(0) == 'C' && header.at(1) == '0' && header.at(2) == '0' && header.at(3) == '1') {
             has_ch1 = true;
             t->Branch("ch1_wf", &ch1_wf);
             ifs.read(reinterpret_cast<char *>(&ch1_dt), sizeof(ch1_dt));
-        } else if (header[0] == 'C' && header[1] == '0' && header[2] == '0' && header[3] == '2') {
+        } else if (header.at(0) == 'C' && header.at(1) == '0' && header.at(2) == '0' && header.at(3) == '2') {
             has_ch2 = true;
             t->Branch("ch2_wf", &ch2_wf);
             ifs.read(reinterpret_cast<char *>(&ch2_dt), sizeof(ch2_dt));
-        } else if (header[0] == 'C' && header[1] == '0' && header[2] == '0' && header[3] == '3') {
+        } else if (header.at(0) == 'C' && header.at(1) == '0' && header.at(2) == '0' && header.at(3) == '3') {
             has_ch3 = true;
             t->Branch("ch3_wf", &ch3_wf);
             ifs.read(reinterpret_cast<char *>(&ch3_dt), sizeof(ch3_dt));
-        } else if (header[0] == 'C' && header[1] == '0' && header[2] == '0' && header[3] == '4') {
+        } else if (header.at(0) == 'C' && header.at(1) == '0' && header.at(2) == '0' && header.at(3) == '4') {
             has_ch4 = true;
             t->Branch("ch4_wf", &ch4_wf);
             ifs.read(reinterpret_cast<char *>(&ch4_dt), sizeof(ch4_dt));
