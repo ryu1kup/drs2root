@@ -17,7 +17,7 @@ The output root file contains a simple `TTree` object.
 
 ## requirements
 
-- C++17 + ROOT
+- C++17 and ROOT
 
 ## compile
 
@@ -38,15 +38,12 @@ options:
 
 - `-i, --input <input.dat>`                    ... specify the input DRS4 binar file `<input.dat>`
 - `-o, --output <output.dat>`                  ... specify the output root file `<output.root>`
-- `-c, --channel-activation <ch1 ch2 ch3 ch4>` ... activate/deactivate each channel simultaneously
 - `-h, --help`                                 ... help command to display the usage
 
 ## example
 
-If the input DRS4 file is `/path/to/test.dat` and you want to get the output `./test.root` with channel 1 and channel 4, then
+If the input DRS4 file is `/path/to/test.dat` and you want to get the output `./test.root`
 
 ```
-./bin/drs2root -i /path/to/test.dat -o ./test.root -c 1 0 0 1
+./bin/drs2root -i /path/to/test.dat -o ./test.root
 ```
-
-NOTE: be careful to activate/deactivate correct channels. If you set incorrect channels, then the output root file must be bugged (or simply `drs2root` would be aborted).
