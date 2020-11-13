@@ -5,6 +5,7 @@
 #include <string>
 #include <cassert>
 #include <filesystem>
+#include <memory>
 
 #include <TFile.h>
 #include <TTree.h>
@@ -24,12 +25,12 @@ constexpr void calibrate(std::array<float, 1024> &time, const std::array<float, 
 }
 
 
-void convert_drs4(const std::string inputfile, const std::string& outputfile){
+void convert_drs4(const std::string &inputfile, const std::string &outputfile){
     assert(std::filesystem::exists(inputfile));
     std::ifstream ifs(inputfile, std::ios::in | std::ios::binary);
 
-    auto f = new TFile(outputfile.c_str(), "recreate");
-    auto t = new TTree("tree", "DRS4 waveform data");
+    auto f = std::make_unique<TFile>(outputfile.c_str(), "recreate");
+    auto t = std::make_shared<TTree>("tree", "DRS4 waveform data", 99, f.get());
 
     std::array<std::uint16_t, 9> buf_event1;
     std::array<std::uint16_t, 3> buf_event2;
