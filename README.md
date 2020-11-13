@@ -6,14 +6,18 @@ A converter from a DRS4 binary dat to a ROOT tree file
 
 The output root file contains a simple `TTree` object.
 
-| branch       | type                 |
-| ------------ | -------------------- |
-| range_center | unsigned short       |
-| trigger_cell | unsigned short       |
-| ch1_wf       | unsigned short[1024] |
-| ch2_wf       | unsigned short[1024] |
-| ch3_wf       | unsigned short[1024] |
-| ch4_wf       | unsigned short[1024] |
+| branch       | unit | type                 |
+| ------------ | ---- | -------------------- |
+| range_center |      | unsigned short       |
+| trigger_cell |      | unsigned short       |
+| ch1_time     | ns   | float[1024]          |
+| ch2_time     | ns   | float[1024]          |
+| ch3_time     | ns   | float[1024]          |
+| ch4_time     | ns   | float[1024]          |
+| ch1_wf       | V    | unsigned short[1024] |
+| ch2_wf       | V    | unsigned short[1024] |
+| ch3_wf       | V    | unsigned short[1024] |
+| ch4_wf       | V    | unsigned short[1024] |
 
 ## requirements
 
