@@ -5,6 +5,7 @@ A converter from a DRS4 binary dat to a ROOT tree file
 ## output data structure
 
 The output root file contains a simple `TTree` object.
+The `ch<i>_time/wf` branches are only written when the channel `<i>` is switched on in the binary.
 
 | branch       | unit | type                 |
 | ------------ | ---- | -------------------- |
@@ -40,14 +41,6 @@ cmake --build . --target install
 
 options:
 
-- `-i, --input <input.dat>`                    ... specify the input DRS4 binar file `<input.dat>`
-- `-o, --output <output.dat>`                  ... specify the output root file `<output.root>`
-- `-h, --help`                                 ... help command to display the usage
-
-## example
-
-If the input DRS4 file is `/path/to/test.dat` and you want to get the output `./test.root`
-
-```
-./bin/drs2root -i /path/to/test.dat -o ./test.root
-```
+- `-i, --input <input.dat>`    ... specify the input DRS4 binar file `<input.dat>`
+- `-o, --output <output.dat>`  ... specify the output root file `<output.root>`
+- `-h, --help`                 ... help command to display the usage
