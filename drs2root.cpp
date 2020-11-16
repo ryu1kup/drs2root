@@ -11,15 +11,16 @@
 #include <TTree.h>
 
 
-constexpr void calibrate(std::array<float, 1024> &time, const std::array<float, 1024> &dt, const std::uint16_t tcell,
+constexpr void calibrate_each_channel(std::array<float, 1024> &time, const std::array<float, 1024> &dt, const std::uint16_t tcell,
         std::array<float, 1024> &wf, const std::array<std::uint16_t, 1024> &wf_adc, const std::uint16_t rc) {
     for (std::uint16_t i = 0; i < 1024; ++i) {
-        float tmp = 0;
-        for (std::uint16_t j = 0; j < i; ++j) {
-            tmp += dt.at((j + tcell) % 1024);
+        if (i == 0) {
+            time.at(0) = 0;
+        } else if (i < 1024 - tcell) {
+            time.at(i) = time.at(i - 1) + dt.at(tcell + i);
+        } else {
+            time.at(i) = time.at(1023 - tcell) + dt.at(i - 1024 + tcell);
         }
-        time.at(i) = tmp;
-
         wf.at(i) = static_cast<float>(wf_adc.at(i)) / 65535. + rc - 0.5;
     }
 }
@@ -106,33 +107,34 @@ void convert_drs4(const std::string &inputfile, const std::string &outputfile){
             ifs.read(reinterpret_cast<char *>(&range_center), sizeof(range_center));
             ifs.read(reinterpret_cast<char *>(&buf_event2), sizeof(buf_event2));
             ifs.read(reinterpret_cast<char *>(&trigger_cell), sizeof(trigger_cell));
+            //std::cout << header[0] << header[1] << header[2] << header[3] << std::endl;
 
             if (has_ch1) {
                 ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
                 ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
                 ifs.read(reinterpret_cast<char *>(&ch1_wf_adc), sizeof(ch1_wf_adc));
-                calibrate(ch1_time, ch1_dt, trigger_cell, ch1_wf, ch1_wf_adc, range_center);
+                calibrate_each_channel(ch1_time, ch1_dt, trigger_cell, ch1_wf, ch1_wf_adc, range_center);
             }
 
             if (has_ch2) {
                 ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
                 ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
                 ifs.read(reinterpret_cast<char *>(&ch2_wf_adc), sizeof(ch2_wf_adc));
-                calibrate(ch2_time, ch2_dt, trigger_cell, ch2_wf, ch2_wf_adc, range_center);
+                calibrate_each_channel(ch2_time, ch2_dt, trigger_cell, ch2_wf, ch2_wf_adc, range_center);
             }
 
             if (has_ch3) {
                 ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
                 ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
                 ifs.read(reinterpret_cast<char *>(&ch3_wf_adc), sizeof(ch3_wf_adc));
-                calibrate(ch3_time, ch3_dt, trigger_cell, ch3_wf, ch3_wf_adc, range_center);
+                calibrate_each_channel(ch3_time, ch3_dt, trigger_cell, ch3_wf, ch3_wf_adc, range_center);
             }
 
             if (has_ch4) {
                 ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
                 ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
                 ifs.read(reinterpret_cast<char *>(&ch4_wf_adc), sizeof(ch4_wf_adc));
-                calibrate(ch4_time, ch4_dt, trigger_cell, ch4_wf, ch4_wf_adc, range_center);
+                calibrate_each_channel(ch4_time, ch4_dt, trigger_cell, ch4_wf, ch4_wf_adc, range_center);
             }
 
             ++size;
