@@ -37,10 +37,9 @@ cmake --build . --target install
 
 ```
 ./bin/drs2root [options]
-```
 
 options:
-
-- `-i, --input <input.dat>`    ... specify the input DRS4 binar file `<input.dat>`
-- `-o, --output <output.dat>`  ... specify the output root file `<output.root>`
-- `-h, --help`                 ... help command to display the usage
+    -i, --input <input.dat>    specify the input DRS4 binar file <input.dat>
+    -o, --output <output.dat>  specify the output root file <output.root> (=./output.root)
+    -h, --help`                help command to display the usage
+```
