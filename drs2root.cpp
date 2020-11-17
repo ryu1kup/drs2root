@@ -13,22 +13,25 @@
 
 
 constexpr void calibrate_each_channel(std::array<float, 1024> &time, const std::array<float, 1024> &dt, const std::uint16_t tcell,
-        std::array<float, 1024> &wf, const std::array<std::uint16_t, 1024> &wf_adc, const std::uint16_t rc) {
+        std::array<float, 1024> &wf, const std::array<std::uint16_t, 1024> &wf_adc, const std::uint16_t rc)
+{
     for (std::uint16_t i = 0; i < 1024; ++i) {
         if (i == 0) {
-            time.at(0) = 0;
+            time.at(i) = 0;
         } else if (i < 1024 - tcell) {
-            time.at(i) = time.at(i - 1) + dt.at(tcell + i);
+            time.at(i) = time.at(i - 1) + dt.at(i + tcell);
         } else {
-            time.at(i) = time.at(1023 - tcell) + dt.at(i - 1024 + tcell);
+            time.at(i) = time.at(i - 1) + dt.at(i + tcell - 1024);
         }
+
         wf.at(i) = static_cast<float>(wf_adc.at(i)) / 65535. + rc - 0.5;
     }
 }
 
 
 constexpr void cailbrate_over_channel(std::array<float, 1024> &ch1_time, std::array<float, 1024> &ch2_time, std::array<float, 1024> &ch3_time, std::array<float, 1024> &ch4_time,
-        bool has_ch1, bool has_ch2, bool has_ch3, bool has_ch4, std::uint16_t tcell) {
+        bool has_ch1, bool has_ch2, bool has_ch3, bool has_ch4, std::uint16_t tcell)
+{
     const auto ireference = (1024 - tcell) % 1024;
     if (has_ch1) {
         if (has_ch2) {
@@ -45,16 +48,16 @@ constexpr void cailbrate_over_channel(std::array<float, 1024> &ch1_time, std::ar
         }
     } else if (has_ch2) {
         if (has_ch3) {
-            const auto delta = ch3_time[ireference] - ch1_time[ireference];
+            const auto delta = ch3_time[ireference] - ch2_time[ireference];
             std::for_each(std::begin(ch3_time), std::end(ch3_time), [delta](auto &t){ t -= delta; });
         }
         if (has_ch4) {
-            const auto delta = ch4_time[ireference] - ch1_time[ireference];
+            const auto delta = ch4_time[ireference] - ch2_time[ireference];
             std::for_each(std::begin(ch4_time), std::end(ch4_time), [delta](auto &t){ t -= delta; });
         }
     } else if (has_ch3) {
         if (has_ch4) {
-            const auto delta = ch4_time[ireference] - ch1_time[ireference];
+            const auto delta = ch4_time[ireference] - ch3_time[ireference];
             std::for_each(std::begin(ch4_time), std::end(ch4_time), [delta](auto &t){ t -= delta; });
         }
     }
@@ -172,7 +175,7 @@ void convert_drs4(const std::string &inputfile, const std::string &outputfile){
                 calibrate_each_channel(ch4_time, ch4_dt, trigger_cell, ch4_wf, ch4_wf_adc, range_center);
             }
 
-//            cailbrate_over_channel(ch1_time, ch2_time, ch3_time, ch4_time, has_ch1, has_ch2, has_ch3, has_ch4, trigger_cell);
+            cailbrate_over_channel(ch1_time, ch2_time, ch3_time, ch4_time, has_ch1, has_ch2, has_ch3, has_ch4, trigger_cell);
             ++size;
             t->Fill();
         } else {
