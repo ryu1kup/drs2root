@@ -65,7 +65,10 @@ constexpr void cailbrate_over_channel(std::array<float, 1024> &ch1_time, std::ar
 
 
 void convert_drs4(const std::string &inputfile, const std::string &outputfile){
-    assert(std::filesystem::exists(inputfile));
+    const auto inputpath = std::filesystem::path(inputfile);
+    assert(std::filesystem::exists(inputpath));
+    assert(inputpath.extension() == ".dat");
+
     std::ifstream ifs(inputfile, std::ios::in | std::ios::binary);
 
     auto f = std::make_unique<TFile>(outputfile.c_str(), "recreate");
@@ -203,9 +206,9 @@ std::tuple<std::string, std::string> parse_arguments(int argc, char **argv) {
         } else if (argvec.at(i) == "-h" || argvec.at(i) == "--help") {
             std::cout << "usage: drs2root [options]" << std::endl;
             std::cout << "options:" << std::endl;
-            std::cout << "  -i, --input                 specify the input DRS4 binary file (required)" << std::endl;
-            std::cout << "  -o, --output                specify the output root file" << std::endl;
-            std::cout << "  -h, --help                  display the information" << std::endl;
+            std::cout << "  -i, --input   specify the input DRS4 binary file (required)" << std::endl;
+            std::cout << "  -o, --output  specify the output root file" << std::endl;
+            std::cout << "  -h, --help    display the information" << std::endl;
             std::exit(0);
         }
     }
