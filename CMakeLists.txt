@@ -3,7 +3,7 @@
 #
 
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
-project(drs2root VERSION 0.1.0 LANGUAGES CXX)
+project(drs2root VERSION 1.0.0 LANGUAGES CXX)
 add_executable(drs2root drs2root.cpp)
 
 target_compile_options(drs2root
