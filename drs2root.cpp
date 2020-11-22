@@ -23,28 +23,20 @@ namespace drs2root {
         auto f = std::make_unique<TFile>(outputfile.c_str(), "recreate");
         auto t = std::make_shared<TTree>("tree", "DRS4 waveform data", 99, f.get());
 
-        std::array<std::uint16_t, 9> buf_event1;
-        std::array<std::uint16_t, 3> buf_event2;
-        std::array<std::uint16_t, 2> buf_event3;
+        std::array<std::uint16_t, 9> buf_event1 {};
+        std::array<std::uint16_t, 3> buf_event2 {};
+        std::array<std::uint16_t, 2> buf_event3 {};
 
-        std::uint16_t range_center;
-        std::uint16_t trigger_cell;
+        std::uint16_t range_center = 0;
+        std::uint16_t trigger_cell = 0;
         std::array<float, 1024> ch1_dt {};
         std::array<float, 1024> ch2_dt {};
         std::array<float, 1024> ch3_dt {};
         std::array<float, 1024> ch4_dt {};
-        std::array<float, 1024> ch1_time {};
-        std::array<float, 1024> ch2_time {};
-        std::array<float, 1024> ch3_time {};
-        std::array<float, 1024> ch4_time {};
-        std::array<std::uint16_t, 1024> ch1_wf_adc {};
-        std::array<std::uint16_t, 1024> ch2_wf_adc {};
-        std::array<std::uint16_t, 1024> ch3_wf_adc {};
-        std::array<std::uint16_t, 1024> ch4_wf_adc {};
-        std::array<float, 1024> ch1_wf {};
-        std::array<float, 1024> ch2_wf {};
-        std::array<float, 1024> ch3_wf {};
-        std::array<float, 1024> ch4_wf {};
+        std::array<std::uint16_t, 1024> ch1_wf {};
+        std::array<std::uint16_t, 1024> ch2_wf {};
+        std::array<std::uint16_t, 1024> ch3_wf {};
+        std::array<std::uint16_t, 1024> ch4_wf {};
 
         t->Branch("range_center", &range_center);
         t->Branch("trigger_cell", &trigger_cell);
@@ -66,22 +58,22 @@ namespace drs2root {
             ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
             if (header.at(0) == 'C' && header.at(1) == '0' && header.at(2) == '0' && header.at(3) == '1') {
                 has_ch1 = true;
-                t->Branch("ch1_time", &ch1_time);
+                t->Branch("ch1_dt", &ch1_dt);
                 t->Branch("ch1_wf", &ch1_wf);
                 ifs.read(reinterpret_cast<char *>(&ch1_dt), sizeof(ch1_dt));
             } else if (header.at(0) == 'C' && header.at(1) == '0' && header.at(2) == '0' && header.at(3) == '2') {
                 has_ch2 = true;
-                t->Branch("ch2_time", &ch2_time);
+                t->Branch("ch2_dt", &ch2_dt);
                 t->Branch("ch2_wf", &ch2_wf);
                 ifs.read(reinterpret_cast<char *>(&ch2_dt), sizeof(ch2_dt));
             } else if (header.at(0) == 'C' && header.at(1) == '0' && header.at(2) == '0' && header.at(3) == '3') {
                 has_ch3 = true;
-                t->Branch("ch3_time", &ch3_time);
+                t->Branch("ch3_dt", &ch3_dt);
                 t->Branch("ch3_wf", &ch3_wf);
                 ifs.read(reinterpret_cast<char *>(&ch3_dt), sizeof(ch3_dt));
             } else if (header.at(0) == 'C' && header.at(1) == '0' && header.at(2) == '0' && header.at(3) == '4') {
                 has_ch4 = true;
-                t->Branch("ch4_time", &ch4_time);
+                t->Branch("ch4_dt", &ch4_dt);
                 t->Branch("ch4_wf", &ch4_wf);
                 ifs.read(reinterpret_cast<char *>(&ch4_dt), sizeof(ch4_dt));
             } else {
@@ -102,25 +94,25 @@ namespace drs2root {
                 if (has_ch1) {
                     ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
                     ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
-                    ifs.read(reinterpret_cast<char *>(&ch1_wf_adc), sizeof(ch1_wf_adc));
+                    ifs.read(reinterpret_cast<char *>(&ch1_wf), sizeof(ch1_wf));
                 }
 
                 if (has_ch2) {
                     ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
                     ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
-                    ifs.read(reinterpret_cast<char *>(&ch2_wf_adc), sizeof(ch2_wf_adc));
+                    ifs.read(reinterpret_cast<char *>(&ch2_wf), sizeof(ch2_wf));
                 }
 
                 if (has_ch3) {
                     ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
                     ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
-                    ifs.read(reinterpret_cast<char *>(&ch3_wf_adc), sizeof(ch3_wf_adc));
+                    ifs.read(reinterpret_cast<char *>(&ch3_wf), sizeof(ch3_wf));
                 }
 
                 if (has_ch4) {
                     ifs.read(reinterpret_cast<char *>(&header), sizeof(header));
                     ifs.read(reinterpret_cast<char *>(&buf_event3), sizeof(buf_event3));
-                    ifs.read(reinterpret_cast<char *>(&ch4_wf_adc), sizeof(ch4_wf_adc));
+                    ifs.read(reinterpret_cast<char *>(&ch4_wf), sizeof(ch4_wf));
                 }
 
                 ++size;
